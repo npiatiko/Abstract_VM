@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(Abstract_VM)
-
+ADD_COMPILE_OPTIONS(-Wall -Wextra -Werror, -Wunused-variable)
 set(CMAKE_CXX_STANDARD 14)
-
-add_executable(Abstract_VM main.cpp)
+AUX_SOURCE_DIRECTORY(./srcs SRCS)
+add_executable(Abstract_VM ${SRCS})
