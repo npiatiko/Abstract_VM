@@ -17,9 +17,13 @@ Factory &Factory::operator=(Factory const &) {
 	return *this;
 }
 IOperand const *Factory::createOperand(eOperandType type, std::string const &value) const {
-	(void)type;
-	static IOperand const *(Factory::*fPtr[])(std::string const &) const =
-			{&Factory::createInt8, &Factory::createInt16, &Factory::createInt32, &Factory::createFloat, &Factory::createDouble};
+	static IOperand const *(Factory::*fPtr[])(std::string const &) const = {
+			&Factory::createInt8,
+			&Factory::createInt16,
+			&Factory::createInt32,
+			&Factory::createFloat,
+			&Factory::createDouble
+	};
 	return (this->*fPtr[static_cast<int>(type)])(value);
 }
 IOperand const *Factory::createInt8(std::string const &value) const {

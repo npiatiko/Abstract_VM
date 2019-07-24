@@ -4,10 +4,12 @@
 #include <regex>
 #include "Factory.hpp"
 #include "Operand.hpp"
+#include "Machine.hpp"
 #include <map>
-int main() {
-	std::ifstream file("test");
-	std::stringstream str;
+int main(int ac, char* av[]) {
+	(void)ac;
+	Machine machine(av[1]);
+/*	std::ifstream file("test");
 	std::string raw;
 	std::smatch matches;
 	Factory fact;
@@ -45,5 +47,6 @@ int main() {
 	}
 //	ops.push_back(fact.createOperand(eOperandType::Double, "12"));
 //	ops.push_back(fact.createOperand(eOperandType::Int8, "8"));
+*/
 	return 0;
 }
