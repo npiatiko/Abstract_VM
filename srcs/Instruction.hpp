@@ -12,9 +12,13 @@
 class Instruction {
 protected:
 	int _line;
+	static std::map<std::string, eOperandType> types;
+	static Factory fact;
+	IOperand const *_rhs, *_lhs;
 public:
 	Instruction();
-	virtual void execInstruction(std::vector<IOperand const *> &stack) = 0;
+	Instruction(int line);
+	virtual void execInstruction(std::vector<IOperand const *> &stack);
 	virtual ~Instruction();
 	Instruction(const Instruction &obj);
 	Instruction &operator=(Instruction const &rhs);
@@ -22,41 +26,61 @@ public:
 
 class Push: public Instruction{
 private:
-	static Factory fact;
 	IOperand const *_operand;
-	static std::map<std::string, eOperandType> types;
 public:
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 	Push(int line, std::string const &str);
 };
 class Pop: public Instruction{
+public:
+	Pop(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Dump: public Instruction{
+public:
+	Dump(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Assert: public Instruction{
+private:
+	IOperand const *_operand;
+public:
+	Assert(int line, std::string const &str);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Add: public Instruction{
+public:
+	Add(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Sub: public Instruction{
+public:
+	Sub(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Mul: public Instruction{
+public:
+	Mul(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Div: public Instruction{
+public:
+	Div(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Mod: public Instruction{
+public:
+	Mod(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Print: public Instruction{
+public:
+	Print(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 class Exit: public Instruction{
+public:
+	Exit(int line);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 #endif //INSTRUCTION_HPP

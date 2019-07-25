@@ -37,5 +37,6 @@ Machine::Machine(char *filename){
 }
 void Machine::run() {
 	for (auto i = this->_instrns.begin(); i < this->_instrns.end(); ++i) {
+		(*i)->execInstruction(this->_stack);
 	}
 }

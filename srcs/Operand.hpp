@@ -47,13 +47,13 @@ public:
 		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value + std::stod(rhs.toString())));
 	}
 	IOperand const *operator-( IOperand const & rhs ) const override{
-		return &rhs;
+		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value - std::stod(rhs.toString())));
 	}
 	IOperand const *operator*( IOperand const & rhs ) const override{
-		return &rhs;
+		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value * std::stod(rhs.toString())));
 	}
 	IOperand const *operator/( IOperand const & rhs ) const override{
-		return &rhs;
+		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value / std::stod(rhs.toString())));
 	}
 	IOperand const *operator%( IOperand const & rhs ) const override{
 		return &rhs;

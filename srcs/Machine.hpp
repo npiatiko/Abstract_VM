@@ -13,6 +13,7 @@ class Machine {
 private:
 	std::vector<Instruction *> _instrns;
 	instFactory _factoryinst;
+	std::vector<IOperand const *> _stack;
 public:
 	Machine(char *file);
 	Machine();

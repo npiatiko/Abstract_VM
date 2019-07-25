@@ -13,16 +13,16 @@ class instFactory {
 private:
 	static std::map<std::string, int> _instrTypes;
 	Instruction *createPush(int line, std::string const &str);
-	Instruction *createPop(int line, std::string &str);
-	Instruction *createDump(int line, std::string &str);
-	Instruction *createAssert(int line, std::string &str);
-	Instruction *createAdd(int line, std::string &str);
-	Instruction *createSub(int line, std::string &str);
-	Instruction *createMul(int line, std::string &str);
-	Instruction *createDiv(int line, std::string &str);
-	Instruction *createMod(int line, std::string &str);
-	Instruction *createPrint(int line, std::string &str);
-	Instruction *createExit(int line, std::string &str);
+	Instruction *createPop(int line, std::string const &str);
+	Instruction *createDump(int line, std::string const &str);
+	Instruction *createAssert(int line, std::string const &str);
+	Instruction *createAdd(int line, std::string const &str);
+	Instruction *createSub(int line, std::string const &str);
+	Instruction *createMul(int line, std::string const &str);
+	Instruction *createDiv(int line, std::string const &str);
+	Instruction *createMod(int line, std::string const &str);
+	Instruction *createPrint(int line, std::string const &str);
+	Instruction *createExit(int line, std::string const &str);
 public:
 	Instruction *createInstr(int line, std::string const &str);
 //	instFactory();
