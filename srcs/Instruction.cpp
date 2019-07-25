@@ -4,6 +4,7 @@
 
 #include <regex>
 #include "Instruction.hpp"
+#include <algorithm>
 
 Instruction::Instruction(): _line(0), _rhs(nullptr), _lhs(nullptr){
 
@@ -51,8 +52,10 @@ Pop::Pop(int line) : Instruction(line) {
 
 }
 void Dump::execInstruction(std::vector<IOperand const *> &stack) {
-	for (auto i = stack.end(); i >= stack.begin(); ++i) {
-		std::cout << (*i)->toString() << std::endl;
+	std::vector<IOperand const *> tmp = stack;
+	std::reverse(tmp.begin(), tmp.end());
+	for (auto i : tmp) {
+		std::cout << i->toString() << std::endl;
 	}
 }
 Dump::Dump(int line) : Instruction(line) {
