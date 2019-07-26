@@ -15,6 +15,7 @@ protected:
 	static std::map<std::string, eOperandType> types;
 	static Factory fact;
 	IOperand const *_rhs, *_lhs;
+	IOperand const *_operand;
 public:
 	Instruction();
 	Instruction(int line);
@@ -26,8 +27,6 @@ public:
 };
 
 class Push: public Instruction{
-private:
-	IOperand const *_operand;
 public:
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 	Push(int line, std::string const &arg);
@@ -46,8 +45,6 @@ public:
 };
 
 class Assert: public Instruction{
-private:
-	IOperand const *_operand;
 public:
 	Assert(int line, std::string const &arg);
 	void execInstruction(std::vector<IOperand const *> &stack) override;

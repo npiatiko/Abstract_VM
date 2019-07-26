@@ -6,7 +6,7 @@
 #include "Instruction.hpp"
 #include <algorithm>
 
-Instruction::Instruction(): _line(0), _rhs(nullptr), _lhs(nullptr){
+Instruction::Instruction(): _line(0), _rhs(nullptr), _lhs(nullptr), _operand(nullptr){
 
 }
 Instruction::~Instruction() = default;
@@ -29,7 +29,7 @@ std::map<std::string, eOperandType> Instruction::types = {
 };
 void Instruction::execInstruction(std::vector<IOperand const *> &stack) {
 	if (stack.size() < 2){
-		throw std::runtime_error("to few operands in stack");
+		throw std::runtime_error("too few operands in stack");
 	}
 	this->_rhs = stack.back();
 	stack.pop_back();
@@ -38,28 +38,23 @@ void Instruction::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Instruction::Instruction(int line, std::string const &arg): Instruction() {
 	this->_line = line;
-	std::smatch match;
-	std::regex_match(arg, match, std::regex("^\\s*([^\\s]*)\\s*$"));
-	std::string tmp0 = match.str(0);
-	std::string tmp1 = match.str(1);
-	std::string tmp2 = match.str(2);
-	if (match.str(1).length()){
-		throw std::logic_error("To many instruction arguments : \"" + match.str(1) + "\"");
+	if (arg.length()) {
+		std::smatch match;
+		if (!std::regex_match(arg, match, std::regex("^\\s*([^\\(|^\\s]*)\\s*\\((.*)\\)\\s*$"))) {
+			throw std::logic_error("Invalid argument \"" + arg + "\"");
+		}
+		std::string tmp0 = match.str(0);
+		std::string tmp1 = match.str(1);
+		std::string tmp2 = match.str(2);
+		auto type = Instruction::types.find(match.str(1));
+		if (type == Instruction::types.end()) {
+			throw std::logic_error("Invalid type of operand \"" + match.str(1) + "\"");
+		}
+		this->_operand = Instruction::fact.createOperand(type->second, match.str(2));
 	}
 }
-Push::Push(int line, std::string const &arg): Instruction(line){
-	std::smatch match;
-	if (!std::regex_match(arg, match, std::regex("^\\s*([^\\(|^\\s]*)\\s*\\((.*)\\)\\s*$"))){
-		throw std::logic_error("Invalid argument \"" + arg + "\"");
-	}
-	std::string tmp0 = match.str(0);
-	std::string tmp1 = match.str(1);
-	std::string tmp2 = match.str(2);
-	auto type = Instruction::types.find(match.str(1));
-	if (type == Instruction::types.end()){
-		throw std::logic_error("Invalid type of operand \"" + match.str(1) + "\"");
-	}
-	this->_operand = Instruction::fact.createOperand(type->second, match.str(2));
+Push::Push(int line, std::string const &arg): Instruction(line, arg){
+
 }
 void Push::execInstruction(std::vector<IOperand const *> &stack) {
 	stack.push_back(this->_operand);
@@ -69,7 +64,9 @@ void Pop::execInstruction(std::vector<IOperand const *> &stack) {
 	stack.pop_back();
 }
 Pop::Pop(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"" );
+	}
 }
 void Dump::execInstruction(std::vector<IOperand const *> &stack) {
 	std::vector<IOperand const *> tmp = stack;
@@ -79,39 +76,41 @@ void Dump::execInstruction(std::vector<IOperand const *> &stack) {
 	}
 }
 Dump::Dump(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Assert::execInstruction(std::vector<IOperand const *> &) {
 
 }
-Assert::Assert(int line, std::string const &arg): Instruction(line){
-	std::smatch match;
-	std::regex_match(arg, match, std::regex("^\\s*([^\\(]*)\\((.*)\\)\\s*$"));
-	std::string tmp0 = match.str(0);
-	std::string tmp1 = match.str(1);
-	std::string tmp2 = match.str(2);
-	this->_operand = Instruction::fact.createOperand(Instruction::types[match.str(1)], match.str(2));
+Assert::Assert(int line, std::string const &arg): Instruction(line, arg){
 }
 void Add::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
 	stack.push_back(*this->_lhs + *this->_rhs);
 }
 Add::Add(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Sub::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
 	stack.push_back(*this->_lhs - *this->_rhs);
 }
 Sub::Sub(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Mul::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
 	stack.push_back(*this->_lhs * *this->_rhs);
 }
 Mul::Mul(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Div::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
@@ -121,7 +120,9 @@ void Div::execInstruction(std::vector<IOperand const *> &stack) {
 	stack.push_back(*this->_lhs / *this->_rhs);
 }
 Div::Div(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Mod::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
@@ -133,7 +134,9 @@ void Mod::execInstruction(std::vector<IOperand const *> &stack) {
 	stack.push_back(*this->_lhs % *this->_rhs);
 }
 Mod::Mod(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Print::execInstruction(std::vector<IOperand const *> &stack) {
 	this->_rhs = stack.back();
@@ -150,12 +153,16 @@ void Print::execInstruction(std::vector<IOperand const *> &stack) {
 	}
 }
 Print::Print(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 void Exit::execInstruction(std::vector<IOperand const *> &) {
 
 }
 Exit::Exit(int line, std::string const &arg) : Instruction(line, arg) {
-
+	if (this->_operand){
+		throw std::logic_error("To many instruction arguments \"");
+	}
 }
 Factory Instruction::fact;
