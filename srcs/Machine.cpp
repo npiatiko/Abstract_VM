@@ -28,8 +28,13 @@ Machine::Machine(char *filename){
 	}
 	while (!filestream.eof()) {
 		std::getline(filestream, raw);
-		if (std::regex_match(raw, matches, std::regex("^([^;][^;]*)(;.*)*"))) {
-			this->_instrns.push_back(this->_factoryinst.createInstr(line, matches.str(1)));
+		try {
+			if (std::regex_match(raw, matches, std::regex("^([^;][^;]*)(;.*)*"))) {
+				this->_instrns.push_back(this->_factoryinst.createInstr(line, matches.str(1)));
+			}
+		}
+		catch(std::exception &e){
+			std::cout << "Parse error: Line " << line << " : Error : " << e.what() << std::endl;
 		}
 		++line;
 	}

@@ -9,7 +9,7 @@
 int main(int ac, char* av[]) {
 	(void)ac;
 	Machine machine(av[1]);
-	machine.run();
+//	machine.run();
 /*	std::ifstream file("test");
 	std::string raw;
 	std::smatch matches;

@@ -28,18 +28,38 @@ std::map<std::string, eOperandType> Instruction::types = {
 	{"double", eOperandType::Double},
 };
 void Instruction::execInstruction(std::vector<IOperand const *> &stack) {
+	if (stack.size() < 2){
+		throw std::runtime_error("to few operands in stack");
+	}
 	this->_rhs = stack.back();
 	stack.pop_back();
 	this->_lhs = stack.back();
 	stack.pop_back();
 }
-Push::Push(int line, std::string const &value): Instruction(line){
+Instruction::Instruction(int line, std::string const &arg): Instruction() {
+	this->_line = line;
 	std::smatch match;
-	std::regex_match(value, match, std::regex("^\\s*([^\\(]*)\\((.*)\\)\\s*$"));
+	std::regex_match(arg, match, std::regex("^\\s*([^\\s]*)\\s*$"));
 	std::string tmp0 = match.str(0);
 	std::string tmp1 = match.str(1);
 	std::string tmp2 = match.str(2);
-	this->_operand = Instruction::fact.createOperand(Instruction::types[match.str(1)], match.str(2));
+	if (match.str(1).length()){
+		throw std::logic_error("To many instruction arguments : \"" + match.str(1) + "\"");
+	}
+}
+Push::Push(int line, std::string const &arg): Instruction(line){
+	std::smatch match;
+	if (!std::regex_match(arg, match, std::regex("^\\s*([^\\(|^\\s]*)\\s*\\((.*)\\)\\s*$"))){
+		throw std::logic_error("Invalid argument \"" + arg + "\"");
+	}
+	std::string tmp0 = match.str(0);
+	std::string tmp1 = match.str(1);
+	std::string tmp2 = match.str(2);
+	auto type = Instruction::types.find(match.str(1));
+	if (type == Instruction::types.end()){
+		throw std::logic_error("Invalid type of operand \"" + match.str(1) + "\"");
+	}
+	this->_operand = Instruction::fact.createOperand(type->second, match.str(2));
 }
 void Push::execInstruction(std::vector<IOperand const *> &stack) {
 	stack.push_back(this->_operand);
@@ -48,7 +68,7 @@ void Pop::execInstruction(std::vector<IOperand const *> &stack) {
 	this->_lhs = stack.back();
 	stack.pop_back();
 }
-Pop::Pop(int line) : Instruction(line) {
+Pop::Pop(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 void Dump::execInstruction(std::vector<IOperand const *> &stack) {
@@ -58,15 +78,15 @@ void Dump::execInstruction(std::vector<IOperand const *> &stack) {
 		std::cout << i->toString() << std::endl;
 	}
 }
-Dump::Dump(int line) : Instruction(line) {
+Dump::Dump(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 void Assert::execInstruction(std::vector<IOperand const *> &) {
 
 }
-Assert::Assert(int line, std::string const &value): Instruction(line){
+Assert::Assert(int line, std::string const &arg): Instruction(line){
 	std::smatch match;
-	std::regex_match(value, match, std::regex("^\\s*([^\\(]*)\\((.*)\\)\\s*$"));
+	std::regex_match(arg, match, std::regex("^\\s*([^\\(]*)\\((.*)\\)\\s*$"));
 	std::string tmp0 = match.str(0);
 	std::string tmp1 = match.str(1);
 	std::string tmp2 = match.str(2);
@@ -76,46 +96,66 @@ void Add::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
 	stack.push_back(*this->_lhs + *this->_rhs);
 }
-Add::Add(int line) : Instruction(line) {
+Add::Add(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 void Sub::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
 	stack.push_back(*this->_lhs - *this->_rhs);
 }
-Sub::Sub(int line) : Instruction(line) {
+Sub::Sub(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 void Mul::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
 	stack.push_back(*this->_lhs * *this->_rhs);
 }
-Mul::Mul(int line) : Instruction(line) {
+Mul::Mul(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 void Div::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
+	if (!std::stoi(this->_rhs->toString())){
+		throw std::runtime_error("div by zero");
+	}
 	stack.push_back(*this->_lhs / *this->_rhs);
 }
-Div::Div(int line) : Instruction(line) {
+Div::Div(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
-void Mod::execInstruction(std::vector<IOperand const *> &) {
+void Mod::execInstruction(std::vector<IOperand const *> &stack) {
+	Instruction::execInstruction(stack);
+	if (std::max(this->_lhs->getType(), this->_rhs->getType()) > eOperandType::Int32){
+		throw std::runtime_error("incompatible operands with mod");
+	} else if (!std::stoi(this->_rhs->toString())){
+		throw std::runtime_error("mod by zero");
+	}
+	stack.push_back(*this->_lhs % *this->_rhs);
+}
+Mod::Mod(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
-Mod::Mod(int line) : Instruction(line) {
-
+void Print::execInstruction(std::vector<IOperand const *> &stack) {
+	this->_rhs = stack.back();
+	stack.pop_back();
+	if (this->_rhs->getType() > eOperandType::Int8){
+		throw std::overflow_error("to large operand");
+	} else{
+		char c = std::stoi(this->_rhs->toString());
+		if (std::isprint(c)){
+			std::cout << c << std::endl;
+		} else{
+			std::cout << "\"non printable\"" << std::endl;
+		}
+	}
 }
-void Print::execInstruction(std::vector<IOperand const *> &) {
-
-}
-Print::Print(int line) : Instruction(line) {
+Print::Print(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 void Exit::execInstruction(std::vector<IOperand const *> &) {
 
 }
-Exit::Exit(int line) : Instruction(line) {
+Exit::Exit(int line, std::string const &arg) : Instruction(line, arg) {
 
 }
 Factory Instruction::fact;

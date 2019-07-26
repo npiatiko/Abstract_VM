@@ -12,17 +12,17 @@ class Instruction;
 class instFactory {
 private:
 	static std::map<std::string, int> _instrTypes;
-	Instruction *createPush(int line, std::string const &str);
-	Instruction *createPop(int line, std::string const &str);
-	Instruction *createDump(int line, std::string const &str);
-	Instruction *createAssert(int line, std::string const &str);
-	Instruction *createAdd(int line, std::string const &str);
-	Instruction *createSub(int line, std::string const &str);
-	Instruction *createMul(int line, std::string const &str);
-	Instruction *createDiv(int line, std::string const &str);
-	Instruction *createMod(int line, std::string const &str);
-	Instruction *createPrint(int line, std::string const &str);
-	Instruction *createExit(int line, std::string const &str);
+	Instruction *createPush(int line, std::string const &arg);
+	Instruction *createPop(int line, std::string const &arg);
+	Instruction *createDump(int line, std::string const &arg);
+	Instruction *createAssert(int line, std::string const &arg);
+	Instruction *createAdd(int line, std::string const &arg);
+	Instruction *createSub(int line, std::string const &arg);
+	Instruction *createMul(int line, std::string const &arg);
+	Instruction *createDiv(int line, std::string const &arg);
+	Instruction *createMod(int line, std::string const &arg);
+	Instruction *createPrint(int line, std::string const &arg);
+	Instruction *createExit(int line, std::string const &arg);
 public:
 	Instruction *createInstr(int line, std::string const &str);
 //	instFactory();

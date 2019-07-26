@@ -44,19 +44,48 @@ public:
 		return this->_type;
 	}
 	IOperand const *operator+(IOperand const &rhs) const override{
-		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value + std::stod(rhs.toString())));
+		eOperandType type = std::max(this->_type, rhs.getType());
+		std::string result;
+		if (type > eOperandType::Int32) {
+			result = std::to_string(this->_value + std::stold(rhs.toString()));
+		} else{
+			result = std::to_string(this->_value + std::stoll(rhs.toString()));
+		}
+		return this->_fact.createOperand(type, result);
 	}
 	IOperand const *operator-( IOperand const & rhs ) const override{
-		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value - std::stod(rhs.toString())));
+		eOperandType type = std::max(this->_type, rhs.getType());
+		std::string result;
+		if (type > eOperandType::Int32) {
+			result = std::to_string(this->_value - std::stold(rhs.toString()));
+		} else{
+			result = std::to_string(this->_value - std::stoll(rhs.toString()));
+		}
+		return this->_fact.createOperand(type, result);
 	}
 	IOperand const *operator*( IOperand const & rhs ) const override{
-		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value * std::stod(rhs.toString())));
+		eOperandType type = std::max(this->_type, rhs.getType());
+		std::string result;
+		if (type > eOperandType::Int32) {
+			result = std::to_string(this->_value * std::stold(rhs.toString()));
+		} else{
+			result = std::to_string(this->_value * std::stoll(rhs.toString()));
+		}
+		return this->_fact.createOperand(type, result);
 	}
 	IOperand const *operator/( IOperand const & rhs ) const override{
-		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(this->_value / std::stod(rhs.toString())));
+		eOperandType type = std::max(this->_type, rhs.getType());
+		std::string result;
+		if (type > eOperandType::Int32) {
+			result = std::to_string(this->_value / std::stold(rhs.toString()));
+		} else{
+			result = std::to_string(this->_value / std::stoll(rhs.toString()));
+		}
+		return this->_fact.createOperand(type, result);
 	}
 	IOperand const *operator%( IOperand const & rhs ) const override{
-		return &rhs;
+		return this->_fact.createOperand(std::max(this->_type, rhs.getType()), std::to_string(
+				static_cast<int>(this->_value) % std::stoi(rhs.toString())));
 	}
 	std::string const &toString() const override{
 		return this->_sValue;
