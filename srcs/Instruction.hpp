@@ -16,6 +16,7 @@ protected:
 	static Factory fact;
 	IOperand const *_rhs, *_lhs;
 	IOperand const *_operand;
+	void ThrowException(int line);
 public:
 	Instruction();
 	Instruction(int line);

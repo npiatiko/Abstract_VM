@@ -47,20 +47,22 @@ Machine::Machine(char *filename): _exit(false), _error(false){
 	this->Parser(input);
 }
 void Machine::run() {
-	auto i = this->_instrns.begin();
-	try {
-		for (; i < this->_instrns.end(); ++i) {
-			(*i)->execInstruction(this->_stack);
+	if (!Machine::_error) {
+		auto i = this->_instrns.begin();
+		try {
+			for (; i < this->_instrns.end(); ++i) {
+				(*i)->execInstruction(this->_stack);
+			}
+			if (!Machine::_exit) {
+				std::cout << "Run error: instruction \"Exit\" not found" << std::endl;
+			}
 		}
-	if (!Machine::_exit) {
-		std::cout << "Run error: instruction \"Exit\" not found" << std::endl;
-	}
-	}
-	catch (exExit &){
-		Machine::_exit = true;
-	}
-	catch (Run_errors &e){
-		std::cout << "Run error: Line " << (*i)->getLine() << " : Error : " << e.what() << std::endl;
+		catch (exExit &) {
+			Machine::_exit = true;
+		}
+		catch (Run_errors &e) {
+			std::cout << "Run error: Line " << (*i)->getLine() << " : Error : " << e.what() << std::endl;
+		}
 	}
 }
 void Machine::Parser(std::stringstream &input) {
@@ -89,4 +91,7 @@ int Machine::ParseFlag(int &ac, char **av) {
 		}
 	}
 	return 0;
+}
+bool Machine::isFlag() {
+	return _flag;
 }

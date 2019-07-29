@@ -9,14 +9,15 @@
 int main(int ac, char* av[]) {
 	int flag = Machine::ParseFlag(ac, av);
 	if (ac - flag > 1) {
+		int i = 1 + flag;
 		try {
-			for (int i = ac - flag; i < ac; ++i) {
-				Machine machine(av[1]);
+			for (; i < ac; ++i) {
+				Machine machine(av[i]);
 				machine.run();
 			}
 		}
 		catch (std::invalid_argument &e){
-			std::cout << av[1] << ": " << e.what() << std::endl;
+			std::cout << av[i] << ": " << e.what() << std::endl;
 		}
 	} else{
 		Machine machine;

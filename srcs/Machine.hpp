@@ -25,6 +25,7 @@ public:
 	Machine &operator=(Machine const &rhs);
 	void run();
 	static int ParseFlag(int &ac, char **av);
+	static bool isFlag();
 };
 
 

@@ -5,6 +5,7 @@
 #include <regex>
 #include "Instruction.hpp"
 #include "Exceptions.hpp"
+#include "Machine.hpp"
 #include <algorithm>
 #include <cassert>
 
@@ -62,6 +63,13 @@ Instruction::Instruction(int line, std::string const &arg): Instruction() {
 int Instruction::getLine() const {
 	return _line;
 }
+void Instruction::ThrowException(int line) {
+	if (Machine::isFlag()){
+		std::cout << "Warning: Line: " << line << ": To many instruction arguments\n";
+	} else {
+		throw Parce_errors("To many instruction arguments");
+	}
+}
 Push::Push(int line, std::string const &arg): Instruction(line, arg){
 	if (!this->_operand){
 		throw Parce_errors("To few instruction arguments" );
@@ -80,7 +88,7 @@ void Pop::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Pop::Pop(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"" );
+	this->ThrowException(line);
 	}
 }
 void Dump::execInstruction(std::vector<IOperand const *> &stack) {
@@ -92,7 +100,7 @@ void Dump::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Dump::Dump(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Assert::execInstruction(std::vector<IOperand const *> &stack) {
@@ -116,7 +124,7 @@ void Add::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Add::Add(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Sub::execInstruction(std::vector<IOperand const *> &stack) {
@@ -125,7 +133,7 @@ void Sub::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Sub::Sub(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Mul::execInstruction(std::vector<IOperand const *> &stack) {
@@ -134,7 +142,7 @@ void Mul::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Mul::Mul(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Div::execInstruction(std::vector<IOperand const *> &stack) {
@@ -146,7 +154,7 @@ void Div::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Div::Div(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Mod::execInstruction(std::vector<IOperand const *> &stack) {
@@ -160,7 +168,7 @@ void Mod::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Mod::Mod(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Print::execInstruction(std::vector<IOperand const *> &stack) {
@@ -180,7 +188,7 @@ void Print::execInstruction(std::vector<IOperand const *> &stack) {
 }
 Print::Print(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 void Exit::execInstruction(std::vector<IOperand const *> &) {
@@ -188,7 +196,7 @@ void Exit::execInstruction(std::vector<IOperand const *> &) {
 }
 Exit::Exit(int line, std::string const &arg) : Instruction(line, arg) {
 	if (this->_operand){
-		throw Parce_errors("To many instruction arguments \"");
+		this->ThrowException(line);
 	}
 }
 Factory Instruction::fact;
