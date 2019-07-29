@@ -24,6 +24,7 @@ public:
 	virtual ~Instruction();
 	Instruction(const Instruction &obj);
 	Instruction &operator=(Instruction const &rhs);
+	int getLine() const;
 };
 
 class Push: public Instruction{

@@ -22,5 +22,4 @@ public:
 	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
 };
 
-
 #endif //FACTORY_HPP

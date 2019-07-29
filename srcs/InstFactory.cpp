@@ -5,6 +5,7 @@
 #include "InstFactory.hpp"
 #include "Instruction.hpp"
 #include <regex>
+#include "Exceptions.hpp"
 
 std::map<std::string, int> instFactory::_instrTypes = {
 		{"push",	0},
@@ -40,7 +41,7 @@ Instruction *instFactory::createInstr(int line, std::string const &str){
 	std::string tmp1 = matches.str(1);
 	std::string tmp2 = matches.str(2);
 	if (instrType == instFactory::_instrTypes.end()){
-		throw std::invalid_argument("Unknown instruction \"" + matches.str(1) + "\"");
+		throw Parce_errors("Unknown instruction \"" + matches.str(1) + "\"");
 	}
 	return (this->*fPtr[instrType->second])(line, matches.str(2));
 }
