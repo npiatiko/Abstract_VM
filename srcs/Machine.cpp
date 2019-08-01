@@ -19,7 +19,7 @@ Machine::Machine(): _exit(false), _error(false){
 		std::getline(std::cin, raw);
 		input << raw << std::endl;
 	}
-	this->Parser(input);
+	this->Parser(input, "stdinput");
 }
 Machine::~Machine() {
 	for (auto i : this->_instrns){
@@ -36,7 +36,7 @@ Machine &Machine::operator=(Machine const &) {
 	return *this;
 }
 Machine::Machine(char *filename): _exit(false), _error(false){
-	std::ifstream filestream(filename);
+	std::ifstream filestream(filename, std::ios_base::in);
 	std::stringstream input;
 	std::smatch matches;
 	if (!filestream.is_open() || !filestream.good()){
@@ -44,7 +44,7 @@ Machine::Machine(char *filename): _exit(false), _error(false){
 	}
 	input << filestream.rdbuf();
 	filestream.close();
-	this->Parser(input);
+	this->Parser(input, filename);
 }
 void Machine::run() {
 	if (!Machine::_error) {
@@ -54,19 +54,26 @@ void Machine::run() {
 				(*i)->execInstruction(this->_stack);
 			}
 			if (!Machine::_exit) {
-				std::cout << "Run error: instruction \"Exit\" not found" << std::endl;
+				std::cout << RED << "Run error: instruction \"Exit\" not found" << DEFAULT << std::endl;
 			}
 		}
 		catch (exExit &) {
 			Machine::_exit = true;
 		}
 		catch (Run_errors &e) {
-			std::cout << "Run error: Line " << (*i)->getLine() << " : Error : " << e.what() << std::endl;
+			std::cout << RED << "Run error: Line " << (*i)->getLine() << " : Error : " << e.what() << DEFAULT << std::endl;
+		}
+		catch (Parce_errors &e) {
+			std::cout << RED << "Run error: Line " << (*i)->getLine() << " : Error : " << e.what() << DEFAULT << std::endl;
 		}
 	}
 }
-void Machine::Parser(std::stringstream &input) {
-	std::string raw;
+void Machine::Parser(std::stringstream &input, std::string const &inputName) {
+	std::ofstream log(inputName + ".log", std::ios_base::out|std::ios_base::trunc);
+	if (!log.is_open() || !log.good()){
+		std::cout << RED << "Warning ! " + inputName + ": wasn't opened" << DEFAULT << std:: endl;
+	}
+	std::string raw, errorMsg;
 	std::smatch matches;
 	int line = 1;
 	while (!input.eof()) {
@@ -78,10 +85,15 @@ void Machine::Parser(std::stringstream &input) {
 		}
 		catch(Parce_errors &e){
 			Machine::_error = true;
-			std::cout << "Parse error: Line " << line << " : Error : " << e.what() << std::endl;
+			errorMsg = "Parse error: Line " + std::to_string(line) + " : Error : " + e.what() + "\n";
+			std::cout << RED << errorMsg << DEFAULT;
+			if (log.is_open() || log.good()){
+				log << errorMsg;
+			}
 		}
 		++line;
 	}
+	log.close();
 }
 int Machine::ParseFlag(int &ac, char **av) {
 	if (ac > 1){

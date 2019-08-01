@@ -15,10 +15,6 @@ private:
 	IOperand const * createFloat( std::string const & value ) const;
 	IOperand const * createDouble( std::string const & value ) const;
 public:
-	Factory();
-	~Factory();
-	Factory(const Factory &obj);
-	Factory &operator=(Factory const &rhs);
 	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
 };
 

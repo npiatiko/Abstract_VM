@@ -9,12 +9,8 @@ const char *AVM_errors::what() const throw(){
 }
 AVM_errors::AVM_errors(std::string const &msg): _msg(msg){
 }
-AVM_errors::AVM_errors() :_msg(nullptr){
-
-}
-AVM_errors::~AVM_errors() {
-
-}
+AVM_errors::AVM_errors()= default;
+AVM_errors::~AVM_errors() = default;
 AVM_errors::AVM_errors(const AVM_errors &obj): _msg(obj._msg){
 
 }

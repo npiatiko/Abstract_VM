@@ -37,9 +37,6 @@ Instruction *instFactory::createInstr(int line, std::string const &str){
 	std::smatch matches;
 	std::regex_match(str, matches, std::regex("^\\s*([^\\s]+)\\s*(.*)\\s*$"));
 	auto instrType = instFactory::_instrTypes.find(matches.str(1));
-	std::string tmp0 = matches.str(0);
-	std::string tmp1 = matches.str(1);
-	std::string tmp2 = matches.str(2);
 	if (instrType == instFactory::_instrTypes.end()){
 		throw Parce_errors("Unknown instruction \"" + matches.str(1) + "\"");
 	}

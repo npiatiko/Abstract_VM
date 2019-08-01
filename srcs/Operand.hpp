@@ -7,6 +7,8 @@
 
 #include "IOperand.hpp"
 #include "Factory.hpp"
+#include <map>
+#include <typeindex>
 
 template <class T>
 class Operand : public IOperand{
@@ -15,26 +17,18 @@ private:
 	eOperandType	_type;
 	std::string		_sValue;
 	Factory			_fact;
+	static std::map<std::type_index, eOperandType> _types;
 public:
 	Operand(): _value(0), _type(eOperandType::Default){}
 	Operand(T value): _value(value), _type(eOperandType::Default), _sValue(std::to_string(this->_value)){
-		if (typeid(T) == typeid(int8_t)){
-			this->_type = eOperandType::Int8;
-		} else if (typeid(T) == typeid(int16_t)){
-			this->_type = eOperandType::Int16;
-		} else if (typeid(T) == typeid(int32_t)){
-			this->_type = eOperandType::Int32;
-		}  else if (typeid(T) == typeid(float)){
-			this->_type = eOperandType::Float;
-		} else if (typeid(T) == typeid(double)){
-			this->_type = eOperandType::Double;
-		}
+		this->_type = Operand::_types[typeid(T)];
 	}
 	~Operand() override = default;
-	Operand(const Operand &obj): _value(obj._value), _type(obj._type){}
+	Operand(const Operand &obj): _value(obj._value), _type(obj._type), _sValue(obj._sValue){}
 	Operand &operator=(Operand const &rhs){
 		this->_value = rhs._value;
 		this->_type = rhs._type;
+		this->_sValue = rhs._sValue;
 		return *this;
 	}
 	int getPrecision() const override {
@@ -92,5 +86,12 @@ public:
 	}
 
 };
-
+template <class T>
+std::map<std::type_index, eOperandType> Operand<T>::_types = {
+		{typeid(int8_t), eOperandType::Int8},
+		{typeid(int16_t), eOperandType::Int16},
+		{typeid(int32_t), eOperandType::Int32},
+		{typeid(float), eOperandType::Float},
+		{typeid(double), eOperandType::Double},
+};
 #endif //OPERAND_HPP

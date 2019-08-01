@@ -25,11 +25,6 @@ private:
 	Instruction *createExit(int line, std::string const &arg);
 public:
 	Instruction *createInstr(int line, std::string const &str);
-//	instFactory();
-//	~instFactory();
-//	instFactory(const instFactory &obj);
-//	instFactory &operator=(instFactory const &rhs);
-
 };
 
 

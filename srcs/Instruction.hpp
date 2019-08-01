@@ -17,14 +17,13 @@ protected:
 	IOperand const *_rhs, *_lhs;
 	IOperand const *_operand;
 	void ThrowException(int line);
-public:
 	Instruction();
-	Instruction(int line);
+	Instruction &operator=(Instruction const &rhs);
+	Instruction(const Instruction &obj);
+public:
 	Instruction(int line, std::string const &arg);
 	virtual void execInstruction(std::vector<IOperand const *> &stack);
 	virtual ~Instruction();
-	Instruction(const Instruction &obj);
-	Instruction &operator=(Instruction const &rhs);
 	int getLine() const;
 };
 

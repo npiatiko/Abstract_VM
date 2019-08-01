@@ -17,15 +17,12 @@ Instruction::~Instruction() {
 	delete(this->_rhs);
 	delete(this->_lhs);
 }
-Instruction::Instruction(const Instruction &obj): _line(obj._line), _rhs(nullptr), _lhs(nullptr), _operand(nullptr){
+Instruction::Instruction(const Instruction &): Instruction(){
 
 }
 Instruction &Instruction::operator=(Instruction const &rhs) {
 	this->_line = rhs._line;
 	return *this;
-}
-Instruction::Instruction(int line): Instruction(){
-	this->_line = line;
 }
 std::map<std::string, eOperandType> Instruction::types = {
 	{"int8", eOperandType::Int8},
@@ -65,7 +62,7 @@ int Instruction::getLine() const {
 }
 void Instruction::ThrowException(int line) {
 	if (Machine::isFlag()){
-		std::cout << "Warning: Line: " << line << ": To many instruction arguments\n";
+		std::cout << MAGENTA << "Warning: Line: " << line << ": To many instruction arguments\n" << DEFAULT;
 	} else {
 		throw Parce_errors("To many instruction arguments");
 	}
@@ -87,15 +84,13 @@ void Pop::execInstruction(std::vector<IOperand const *> &stack) {
 	stack.pop_back();
 }
 Pop::Pop(int line, std::string const &arg) : Instruction(line, arg) {
-	if (this->_operand){
-	this->ThrowException(line);
+	if (this->_operand) {
+		this->ThrowException(line);
 	}
 }
 void Dump::execInstruction(std::vector<IOperand const *> &stack) {
-	std::vector<IOperand const *> tmp = stack;
-	std::reverse(tmp.begin(), tmp.end());
-	for (auto i : tmp) {
-		std::cout << i->toString() << std::endl;
+	for (auto wrapIter = stack.rbegin(); wrapIter != stack.rend(); ++wrapIter) {
+		std::cout << (*wrapIter)->toString() << std::endl;
 	}
 }
 Dump::Dump(int line, std::string const &arg) : Instruction(line, arg) {

@@ -8,17 +8,6 @@
 #include <cfloat>
 #include <regex>
 
-Factory::Factory() {
-}
-Factory::~Factory() {
-
-}
-Factory::Factory(const Factory &) {
-
-}
-Factory &Factory::operator=(Factory const &) {
-	return *this;
-}
 IOperand const *Factory::createOperand(eOperandType type, std::string const &value) const {
 	static IOperand const *(Factory::*fPtr[])(std::string const &) const = {
 			&Factory::createInt8,
@@ -31,12 +20,11 @@ IOperand const *Factory::createOperand(eOperandType type, std::string const &val
 	if (!std::regex_match(value, match, std::regex("^\\s*(-?\\d*\\.?\\d*)\\s*$"))){
 		throw Parce_errors("Bad value \"" + value + "\"");
 	}
-	std::string tmp0 = match.str(0);
-	std::string tmp1 = match.str(1);
-	std::string tmp2 = match.str(2);
-
 	try {
 		return (this->*fPtr[static_cast<int >(type)])(match.str(1));
+	}
+	catch (Parce_errors &){
+		throw ;
 	}
 	catch (std::exception &e){
 		if (match.str(1)[0] == '-') {
