@@ -23,6 +23,8 @@ private:
 	Instruction *createMod(int line, std::string const &arg);
 	Instruction *createPrint(int line, std::string const &arg);
 	Instruction *createExit(int line, std::string const &arg);
+	Instruction *createMin(int line, std::string const &arg);
+	Instruction *createMax(int line, std::string const &arg);
 public:
 	Instruction *createInstr(int line, std::string const &str);
 };

@@ -1,3 +1,7 @@
+#include <utility>
+
+#include <utility>
+
 //
 // Created by Nickolay PIATIKOP on 2019-07-29.
 //
@@ -7,7 +11,7 @@
 const char *AVM_errors::what() const throw(){
 	return this->_msg.c_str();
 }
-AVM_errors::AVM_errors(std::string const &msg): _msg(msg){
+AVM_errors::AVM_errors(std::string msg): _msg(std::move(msg)){
 }
 AVM_errors::AVM_errors()= default;
 AVM_errors::~AVM_errors() = default;

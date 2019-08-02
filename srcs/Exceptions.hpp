@@ -15,7 +15,7 @@ protected:
 	AVM_errors &operator=(AVM_errors const &rhs);
 public:
 	virtual ~AVM_errors();
-	explicit AVM_errors(std::string const &msg);
+	explicit AVM_errors(std::string msg);
 	const char *what() const throw() override;
 };
 

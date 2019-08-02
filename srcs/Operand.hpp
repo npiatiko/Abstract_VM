@@ -9,6 +9,8 @@
 #include "Factory.hpp"
 #include <map>
 #include <typeindex>
+#include <sstream>
+#include <iomanip>
 
 template <class T>
 class Operand : public IOperand{
@@ -20,8 +22,11 @@ private:
 	static std::map<std::type_index, eOperandType> _types;
 public:
 	Operand(): _value(0), _type(eOperandType::Default){}
-	Operand(T value): _value(value), _type(eOperandType::Default), _sValue(std::to_string(this->_value)){
+	Operand(T value): _value(value), _type(eOperandType::Default){
+		std::stringstream tmp;
 		this->_type = Operand::_types[typeid(T)];
+		tmp << std::fixed << std::setprecision(2) << (this->_type == eOperandType::Int8 ? static_cast<int32_t >(this->_value) : this->_value);
+		_sValue = tmp.str();
 	}
 	~Operand() override = default;
 	Operand(const Operand &obj): _value(obj._value), _type(obj._type), _sValue(obj._sValue){}

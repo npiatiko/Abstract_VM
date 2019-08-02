@@ -19,6 +19,8 @@ std::map<std::string, int> instFactory::_instrTypes = {
 		{"mod",		8},
 		{"print",	9},
 		{"exit",	10},
+		{"min",	11},
+		{"max",	12}
 };
 Instruction *instFactory::createInstr(int line, std::string const &str){
 	static Instruction *(instFactory::*fPtr[])(int , std::string const &) = {
@@ -33,6 +35,8 @@ Instruction *instFactory::createInstr(int line, std::string const &str){
 			&instFactory::createMod,
 			&instFactory::createPrint,
 			&instFactory::createExit,
+			&instFactory::createMin,
+			&instFactory::createMax
 	};
 	std::smatch matches;
 	std::regex_match(str, matches, std::regex("^\\s*([^\\s]+)\\s*(.*)\\s*$"));
@@ -74,4 +78,10 @@ Instruction *instFactory::createPrint(int line, std::string const &arg) {
 }
 Instruction *instFactory::createExit(int line, std::string const &arg) {
 	return new Exit(line, arg);
+}
+Instruction *instFactory::createMin(int line, std::string const &arg) {
+	return new Min(line, arg);
+}
+Instruction *instFactory::createMax(int line, std::string const &arg) {
+	return new Max(line, arg);
 }

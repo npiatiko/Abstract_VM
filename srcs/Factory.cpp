@@ -17,7 +17,7 @@ IOperand const *Factory::createOperand(eOperandType type, std::string const &val
 			&Factory::createDouble
 	};
 	std::smatch match;
-	if (!std::regex_match(value, match, std::regex("^\\s*(-?\\d*\\.?\\d*)\\s*$"))){
+	if (!std::regex_match(value, match, std::regex("^\\s*(-?\\d+\\.?\\d*)\\s*$"))){
 		throw Parce_errors("Bad value \"" + value + "\"");
 	}
 	try {
@@ -72,7 +72,7 @@ IOperand const *Factory::createInt32(std::string const &value) const {
 }
 IOperand const *Factory::createFloat(std::string const &value) const {
 	size_t pos = 0;
-	if (!std::regex_match(value, std::regex("^[^\\.]*\\..*$"))){
+	if (!std::regex_match(value, std::regex("^-?\\d+\\.\\d+$"))){
 		throw Parce_errors ("Bad value \"" + value + "\"");
 	}
 	long double tmp = std::stold(value, &pos);
@@ -87,7 +87,7 @@ IOperand const *Factory::createFloat(std::string const &value) const {
 }
 IOperand const *Factory::createDouble(std::string const &value) const {
 	size_t pos = 0;
-	if (!std::regex_match(value, std::regex("^[^\\.]*\\..*$"))){
+	if (!std::regex_match(value, std::regex("^-?\\d+\\.\\d+$"))){
 		throw Parce_errors ("Bad value \"" + value + "\"");
 	}
 	long double tmp = std::stold(value, &pos);

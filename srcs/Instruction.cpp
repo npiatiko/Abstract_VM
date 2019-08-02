@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cassert>
 
+Factory Instruction::fact;
 Instruction::Instruction(): _line(0), _rhs(nullptr), _lhs(nullptr), _operand(nullptr){
 
 }
@@ -194,4 +195,35 @@ Exit::Exit(int line, std::string const &arg) : Instruction(line, arg) {
 		this->ThrowException(line);
 	}
 }
-Factory Instruction::fact;
+Min::Min(int line, std::string const &arg) : Instruction(line, arg) {
+	if (this->_operand){
+		this->ThrowException(line);
+	}
+}
+void Min::execInstruction(std::vector<IOperand const *> &stack) {
+	if (!stack.empty()) {
+		std::string min = (*stack.begin())->toString();
+		for (auto & wrapIter : stack) {
+			if (std::stold(wrapIter->toString()) < std::stold(min)){
+				min = wrapIter->toString();
+			}
+		}
+		std::cout << "MIN: " << min << std::endl;
+	}
+}
+Max::Max(int line, std::string const &arg) : Instruction(line, arg) {
+	if (this->_operand){
+		this->ThrowException(line);
+	}
+}
+void Max::execInstruction(std::vector<IOperand const *> &stack) {
+	if (!stack.empty()) {
+		std::string max = (*stack.begin())->toString();
+		for (auto & wrapIter : stack) {
+			if (std::stold(wrapIter->toString()) > std::stold(max)){
+				max = wrapIter->toString();
+			}
+		}
+		std::cout << "MAX: " << max << std::endl;
+	}
+}

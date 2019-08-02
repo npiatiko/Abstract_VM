@@ -16,7 +16,7 @@ protected:
 	static Factory fact;
 	IOperand const *_rhs, *_lhs;
 	IOperand const *_operand;
-	void ThrowException(int line);
+	static void ThrowException(int line);
 	Instruction();
 	Instruction &operator=(Instruction const &rhs);
 	Instruction(const Instruction &obj);
@@ -90,6 +90,16 @@ public:
 class Exit: public Instruction{
 public:
 	Exit(int line, std::string const &arg);
+	void execInstruction(std::vector<IOperand const *> &stack) override;
+};
+class Min: public Instruction{
+public:
+	Min(int line, std::string const &arg);
+	void execInstruction(std::vector<IOperand const *> &stack) override;
+};
+class Max: public Instruction{
+public:
+	Max(int line, std::string const &arg);
 	void execInstruction(std::vector<IOperand const *> &stack) override;
 };
 #endif //INSTRUCTION_HPP
