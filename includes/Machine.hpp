@@ -28,5 +28,4 @@ public:
 	static bool isFlag();
 };
 
-
 #endif //MACHINE_HPP

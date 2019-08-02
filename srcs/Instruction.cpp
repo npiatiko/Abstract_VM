@@ -8,6 +8,8 @@
 #include "Machine.hpp"
 #include <algorithm>
 #include <cassert>
+#include <sstream>
+#include <iomanip>
 
 Factory Instruction::fact;
 Instruction::Instruction(): _line(0), _rhs(nullptr), _lhs(nullptr), _operand(nullptr){
@@ -48,9 +50,6 @@ Instruction::Instruction(int line, std::string const &arg): Instruction() {
 		if (!std::regex_match(arg, match, std::regex("^\\s*([^\\(|^\\s]*)\\s*\\((.*)\\)\\s*$"))) {
 			throw Parce_errors("Invalid argument \"" + arg + "\"");
 		}
-		std::string tmp0 = match.str(0);
-		std::string tmp1 = match.str(1);
-		std::string tmp2 = match.str(2);
 		auto type = Instruction::types.find(match.str(1));
 		if (type == Instruction::types.end()) {
 			throw Parce_errors("Invalid type of operand \"" + match.str(1) + "\"");
@@ -90,8 +89,12 @@ Pop::Pop(int line, std::string const &arg) : Instruction(line, arg) {
 	}
 }
 void Dump::execInstruction(std::vector<IOperand const *> &stack) {
-	for (auto wrapIter = stack.rbegin(); wrapIter != stack.rend(); ++wrapIter) {
-		std::cout << (*wrapIter)->toString() << std::endl;
+	for (auto wrapIter : stack) {
+		if (wrapIter->getPrecision() < 3) {
+			std::cout << wrapIter->toString() << std::endl;
+		} else {
+			std::cout << std::fixed << std::setprecision(2) << std::stold(wrapIter->toString()) << std::endl;
+		}
 	}
 }
 Dump::Dump(int line, std::string const &arg) : Instruction(line, arg) {
@@ -143,7 +146,7 @@ Mul::Mul(int line, std::string const &arg) : Instruction(line, arg) {
 }
 void Div::execInstruction(std::vector<IOperand const *> &stack) {
 	Instruction::execInstruction(stack);
-	if (!std::stoi(this->_rhs->toString())){
+	if (std::stold(this->_rhs->toString()) == 0.0){
 		throw Run_errors("div by zero");
 	}
 	stack.push_back(*this->_lhs / *this->_rhs);
@@ -202,13 +205,18 @@ Min::Min(int line, std::string const &arg) : Instruction(line, arg) {
 }
 void Min::execInstruction(std::vector<IOperand const *> &stack) {
 	if (!stack.empty()) {
-		std::string min = (*stack.begin())->toString();
+		IOperand const *min = *stack.begin();
 		for (auto & wrapIter : stack) {
-			if (std::stold(wrapIter->toString()) < std::stold(min)){
-				min = wrapIter->toString();
+			if (std::stold(wrapIter->toString()) < std::stold(min->toString())){
+				min = wrapIter;
 			}
 		}
-		std::cout << "MIN: " << min << std::endl;
+		std::cout << "MIN: ";
+		if (min->getPrecision() < 3) {
+			std::cout << min->toString() << std::endl;
+		} else {
+			std::cout << std::fixed << std::setprecision(2) << std::stold(min->toString()) << std::endl;
+		}
 	}
 }
 Max::Max(int line, std::string const &arg) : Instruction(line, arg) {
@@ -218,12 +226,17 @@ Max::Max(int line, std::string const &arg) : Instruction(line, arg) {
 }
 void Max::execInstruction(std::vector<IOperand const *> &stack) {
 	if (!stack.empty()) {
-		std::string max = (*stack.begin())->toString();
+		IOperand const *max = *stack.begin();
 		for (auto & wrapIter : stack) {
-			if (std::stold(wrapIter->toString()) > std::stold(max)){
-				max = wrapIter->toString();
+			if (std::stold(wrapIter->toString()) > std::stold(max->toString())){
+				max = wrapIter;
 			}
 		}
-		std::cout << "MAX: " << max << std::endl;
+		std::cout << "MIN: ";
+		if (max->getPrecision() < 3) {
+			std::cout << max->toString() << std::endl;
+		} else {
+			std::cout << std::fixed << std::setprecision(2) << std::stold(max->toString()) << std::endl;
+		}
 	}
 }

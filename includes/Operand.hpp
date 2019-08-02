@@ -25,7 +25,7 @@ public:
 	Operand(T value): _value(value), _type(eOperandType::Default){
 		std::stringstream tmp;
 		this->_type = Operand::_types[typeid(T)];
-		tmp << std::fixed << std::setprecision(2) << (this->_type == eOperandType::Int8 ? static_cast<int32_t >(this->_value) : this->_value);
+		tmp << std::fixed << std::setprecision(20) << (this->_type == eOperandType::Int8 ? static_cast<int32_t >(this->_value) : this->_value);
 		_sValue = tmp.str();
 	}
 	~Operand() override = default;
